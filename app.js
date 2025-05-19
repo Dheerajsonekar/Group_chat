@@ -3,7 +3,9 @@ const app = express();
 require('dotenv').config();
 const db = require('./config/database');
 const user = require('./models/User');
+const Message = require('./models/Message');
 const userRoutes = require('./routes/userRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 const cors = require('cors');
 const path = require('path');
 
@@ -16,7 +18,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'signUp.html'));
 })
 app.use('/api', userRoutes);
-
+app.use('/api', messageRoutes);
 
 
 
