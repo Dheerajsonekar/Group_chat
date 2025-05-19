@@ -20,8 +20,33 @@ form.addEventListener('submit', async (e)=>{
             headers: { Authorization: `Bearer ${token}` }
          })
          console.log(response);
+         await showAllChat();
          form.reset();
     }catch(err){
         console.log("error at message send frontend",err);
     }
 })
+
+async function showAllChat(){
+    try{
+       const response  = await axios.get('/api/allchat', {
+        headers: {Authorization:  `Bearer ${token}`}
+       })
+       const chats = response.data;
+       const list = document.getElementById('chatting-list');
+       list.innerHTML = "";
+       chats.forEach((chat)=>{
+        const li = document.createElement('li');
+        const p = document.createElement('p');
+        p.textContent = chat.userId;
+        li.textContent = chat.message;
+        list.appendChild(p);
+        list.appendChild(li);
+       })
+    }catch(err){
+        console.log("error at showAllChat: ", err);
+    }
+}
+
+
+window.addEventListener('DOMContentLoaded', showAllChat);
