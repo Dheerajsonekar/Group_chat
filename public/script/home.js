@@ -50,3 +50,4 @@ async function showAllChat(){
 
 
 window.addEventListener('DOMContentLoaded', showAllChat);
+setInterval(()=>showAllChat(), 1000);
