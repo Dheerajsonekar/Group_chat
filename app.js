@@ -4,6 +4,8 @@ require("dotenv").config();
 const db = require("./config/database");
 const user = require("./models/User");
 const Message = require("./models/Message");
+const Group = require("./models/Group");
+const GroupMember = require("./models/GroupMember");
 const userRoutes = require("./routes/userRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const cors = require("cors");
@@ -20,7 +22,7 @@ app.use("/api", userRoutes);
 app.use("/api", messageRoutes);
 
 db.sync(
-    // { alter: true }
+    { alter: true }
 )
   .then(() => {
     console.log("Database connected");
