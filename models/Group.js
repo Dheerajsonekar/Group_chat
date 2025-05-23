@@ -1,6 +1,6 @@
 const {DataTypes} = require('sequelize');
 const db = require('../config/database');
-const User = require('./User');
+
 
 const Group = db.define('group', {
     name: {
@@ -9,7 +9,6 @@ const Group = db.define('group', {
     }
 })
 
-Group.belongsTo(User, { foreignKey: 'createdBy' });
-User.hasMany(Group, { foreignKey: 'createdBy' });
+
 
 module.exports = Group;

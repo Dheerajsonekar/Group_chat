@@ -10,20 +10,39 @@
 </head>
 
 <body>
+
     <div class="header">
+        <button id="create-group">Create Group</button>
+        <select id="group-select"></select>
+        <button id="show-invite-form">Invite User</button>
+        <div id="invite-form" style="display: none; margin-top: 10px;">
+            <input type="text" id="invite-user-id" placeholder="Enter user ID to invite">
+            <button id="submit-invite">Invite</button>
+        </div>
+        <h3 id="username">Username</h3>
         <button id="logout">logout</button>
     </div>
+
+
+
+
+    <div id="create-group-form" style="display: none;">
+        <input type="text" id="group-name" placeholder="Enter group name">
+        <button id="submit-group">Create</button>
+    </div>
+
     <div class="chat-section" id="chat">
         <h3>Chat</h3>
-        <ul  class="chattinglistshow" id="chatting-list">example</ul>
+        <ul class="chattinglistshow" id="chatting-list">example</ul>
     </div>
+
     <div>
         <form id="chatForm">
             <input type="text" name="message" id="message" placeholder="enter your message">
             <button type="submit">send</button>
         </form>
     </div>
-   <script src="./script/home.js"></script>
+    <script src="./script/home.js"></script>
 </body>
 
 </html>

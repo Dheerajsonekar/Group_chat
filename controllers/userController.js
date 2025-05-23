@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
   const t = await sequelize.transaction();
-  console.log(req.body);
+  
   try {
     const { name, email, phone, password } = req.body;
     const alreadyEmail = await User.findOne({ where: { email } });

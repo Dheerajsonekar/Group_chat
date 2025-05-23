@@ -2,14 +2,16 @@ const express = require("express");
 const app = express();
 require("dotenv").config();
 const db = require("./config/database");
-const user = require("./models/User");
+
+const userRoutes = require("./routes/userRoutes");
+const messageRoutes = require("./routes/messageRoutes");
+const groupRoutes = require("./routes/groupRoutes");
+const cors = require("cors");
+const path = require("path");
+const User = require("./models/User");
 const Message = require("./models/Message");
 const Group = require("./models/Group");
 const GroupMember = require("./models/GroupMember");
-const userRoutes = require("./routes/userRoutes");
-const messageRoutes = require("./routes/messageRoutes");
-const cors = require("cors");
-const path = require("path");
 
 app.use(cors());
 app.use(express.json());
@@ -20,9 +22,25 @@ app.get("/", (req, res) => {
 });
 app.use("/api", userRoutes);
 app.use("/api", messageRoutes);
+app.use("/api", groupRoutes);
+
+
+
+// Associations
+User.hasMany(Message, {foreignKey: 'userId'})
+Message.belongsTo(User, {foreignKey: 'userId'});
+
+Message.belongsTo(Group);
+Group.hasMany(Message);
+
+Group.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
+User.hasMany(Group, { as: 'createdGroups', foreignKey: 'createdBy' });
+
+User.belongsToMany(Group, { through: GroupMember, as: 'memberGroups', foreignKey: 'userId' });
+Group.belongsToMany(User, { through: GroupMember, as: 'members', foreignKey: 'groupId' });
 
 db.sync(
-    { alter: true }
+    // { alter: true }
 )
   .then(() => {
     console.log("Database connected");
