@@ -95,11 +95,64 @@ async function fetchGroups() {
 
 // Handle group change
 groupSelect.addEventListener("change", async (e) => {
+
   selectedGroupId = e.target.value;
   lastMessageId = 0;
   loadChatsFromLocal();
   await fetchNewChats();
+  await showMembers(selectedGroupId);
 });
+
+async function showMembers(groupId) {
+  try {
+    const res = await axios.get(`/api/groups/${groupId}/members`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    
+    const memberList = document.getElementById("member-list");
+    memberList.innerHTML = "";
+
+    res.data.forEach(member => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <span><strong>${member.username}</strong></span>
+        ${member.isAdmin ? `<span style="margin-left: 10px;">(Admin)</span>` : `
+          <button onclick="makeAdmin(${groupId}, ${member.id})">Make Admin</button>`}
+        <button onclick="removeMember(${groupId}, ${member.id})">Remove</button>
+      `;
+      memberList.appendChild(li);
+    });
+  } catch (err) {
+    console.error("Error loading members", err);
+  }
+}
+
+async function makeAdmin(groupId, userId) {
+  try {
+    await axios.post(`/api/groups/${groupId}/make-admin`, { userId }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    alert("User promoted to admin");
+    await showMembers(groupId);
+  } catch (err) {
+    alert("Failed to make admin");
+  }
+}
+
+async function removeMember(groupId, userId) {
+  try {
+    await axios.delete(`/api/groups/${groupId}/remove-user/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    alert("User removed");
+    await showMembers(groupId);
+  } catch (err) {
+    alert("Failed to remove user");
+  }
+}
+
+
+
 
 // Submit chat message
 form.addEventListener("submit", async (e) => {
@@ -134,7 +187,8 @@ async function fetchNewChats() {
     const res = await axios.get(`/api/allchat?groupId=${selectedGroupId}&after=${lastMessageId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-
+   
+    
     const newChats = res.data;
     newChats.forEach((chat) => {
       renderChat(chat);
@@ -154,11 +208,7 @@ async function loadGroupChats() {
   await fetchNewChats();
 }
 
-// Load everything on page load
-window.addEventListener("DOMContentLoaded", async () => {
-  await fetchGroups();
-  setInterval(fetchNewChats, 1000);
-});
+
 
 
 
@@ -187,4 +237,18 @@ inviteSubmitBtn.addEventListener("click", async () => {
     console.error("Error inviting user:", err);
     alert("Failed to invite user");
   }
+});
+
+
+
+
+
+
+
+
+// Load everything on page load
+window.addEventListener("DOMContentLoaded", async () => {
+ 
+  await fetchGroups();
+  // setInterval(fetchNewChats, 1000);
 });

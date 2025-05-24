@@ -39,6 +39,8 @@ User.hasMany(Group, { as: 'createdGroups', foreignKey: 'createdBy' });
 User.belongsToMany(Group, { through: GroupMember, as: 'memberGroups', foreignKey: 'userId' });
 Group.belongsToMany(User, { through: GroupMember, as: 'members', foreignKey: 'groupId' });
 
+GroupMember.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
 db.sync(
     // { alter: true }
 )
